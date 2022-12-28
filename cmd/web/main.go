@@ -27,13 +27,9 @@ func main() {
 
 	render.NewTemplates(&app)
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello World")
-	})
-	
-	// http.HandleFunc("/", handlers.Repo.Home)
+	http.HandleFunc("/", handlers.Repo.Home)
 	http.HandleFunc("/about", handlers.Repo.About)
 
 	fmt.Printf("starting application on port %s", portNumber)
-	_ = http.ListenAndServe(portNumber, nil)
+	http.ListenAndServe(portNumber, nil)
 }
