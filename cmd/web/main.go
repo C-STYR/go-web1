@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/C-STYR/go-web1/pkg/config"
@@ -27,9 +28,20 @@ func main() {
 
 	render.NewTemplates(&app)
 
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
+	// http.HandleFunc("/", handlers.Repo.Home)
+	// http.HandleFunc("/about", handlers.Repo.About)
 
 	fmt.Printf("starting application on port %s", portNumber)
-	http.ListenAndServe(portNumber, nil)
+	// http.ListenAndServe(portNumber, nil)
+	srv := &http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
+	}
+
+	// if srvErr := srv.ListenAndServe(); srvErr != nil {
+	// 	log.Fatal(srvErr)
+	// }
+
+	err = srv.ListenAndServe()
+	log.Fatal(err)
 }
