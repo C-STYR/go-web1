@@ -4,16 +4,28 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/C-STYR/go-web1/pkg/config"
 	"github.com/C-STYR/go-web1/pkg/handlers"
 	"github.com/C-STYR/go-web1/pkg/render"
+	"github.com/alexedwards/scs/v2"
 )
 
 const portNumber = ":8080"
+var app config.AppConfig
+
+var session = scs.New()
 
 func main() {
-	var app config.AppConfig
+
+	// change to true in production
+	app.InProduction = false
+
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = app.InProduction
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
@@ -22,25 +34,19 @@ func main() {
 
 	app.TemplateCache = tc
 	app.UseCache = false
+	app.Session = session
 
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
 
-	// http.HandleFunc("/", handlers.Repo.Home)
-	// http.HandleFunc("/about", handlers.Repo.About)
-
 	fmt.Printf("starting application on port %s", portNumber)
-	// http.ListenAndServe(portNumber, nil)
+
 	srv := &http.Server{
 		Addr:    portNumber,
 		Handler: routes(&app),
 	}
-
-	// if srvErr := srv.ListenAndServe(); srvErr != nil {
-	// 	log.Fatal(srvErr)
-	// }
 
 	err = srv.ListenAndServe()
 	log.Fatal(err)
