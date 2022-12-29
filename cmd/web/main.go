@@ -22,11 +22,16 @@ func main() {
 	// change to true in production
 	app.InProduction = false
 
+	
+	// set session parameters
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = app.InProduction
-
+	
+	// assign the session to this config to expose it to middleware
+	app.Session = session
+	
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		fmt.Println("MAIN cannot create template cache", err)
@@ -34,7 +39,6 @@ func main() {
 
 	app.TemplateCache = tc
 	app.UseCache = false
-	app.Session = session
 
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
