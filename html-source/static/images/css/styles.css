@@ -1,0 +1,5 @@
+.datepicker-main,
+.datepicker,
+.datepicker-picker {
+  z-index: 10000;
+}
