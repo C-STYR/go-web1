@@ -10,22 +10,28 @@ import (
 
 	"github.com/C-STYR/go-web1/pkg/config"
 	"github.com/C-STYR/go-web1/pkg/models"
+	"github.com/justinas/nosurf"
 )
 
 var functions = template.FuncMap{}
 
 var app *config.AppConfig
+var pathToTemplates = "./templates"
+
 
 // NewTemplates sets the config for the render pkg
 func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
+	td.Flash = "flashy"
+	fmt.Println("td", td)
 	return td
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -41,7 +47,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 
 	buf := new(bytes.Buffer)
 
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 
 	if err := t.Execute(buf, td); err != nil {
 		fmt.Println(err)
@@ -72,21 +78,17 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			return myCache, err
 		}
 
-		// matches, err := filepath.Glob("./templates/*.layout.html")
-		// if err != nil {
-		// 	fmt.Println(err)
-		// 	return myCache, err
-		// }
+		matches, err := filepath.Glob(fmt.Sprintf("%s/*.layout.html", pathToTemplates))
+		if err != nil {
+			return myCache, err
+		}
 
-		// if len(matches) > 0 {
-		// 	// fmt.Println("matches found", matches)
-		// 	// ParseGlob returns *Templates
-		// 	ts, err = template.ParseGlob("./templates/*.layout.html")
-		// 	if err != nil {
-		// 		fmt.Println(err)
-		// 		return myCache, err
-		// 	}
-		// }
+		if len(matches) > 0 {
+			ts, err = ts.ParseGlob(fmt.Sprintf("%s/*.layout.html", pathToTemplates))
+			if err != nil {
+				return myCache, err
+			}
+		}
 		myCache[name] = ts
 	}
 

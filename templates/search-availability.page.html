@@ -1,18 +1,19 @@
-{{template "base"}}
+{{template "base" .}}
 
 {{define "content"}}  
-<div class="container">
+  <div class="container">
     <div class="row mt-5">
       <div class="col">
         <h1 class="text-center mt-4">Search for Availability</h1>
 
         <form
           id="reservation_form"
-          action=""
-          method="GET"
+          action="/search-availability"
+          method="POST"
           class="needs-validation"
           novalidate
         >
+          <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
           <div class="row">
             <div class="col">
               <div class="row" id="reservation-dates">

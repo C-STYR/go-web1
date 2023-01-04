@@ -1,6 +1,6 @@
 module github.com/C-STYR/go-web1
 
-go 1.19
+go 1.15
 
 require (
 	github.com/alexedwards/scs/v2 v2.5.0
