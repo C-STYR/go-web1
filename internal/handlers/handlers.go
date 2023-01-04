@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/C-STYR/go-web1/pkg/config"
-	"github.com/C-STYR/go-web1/pkg/models"
-	"github.com/C-STYR/go-web1/pkg/render"
+	"github.com/C-STYR/go-web1/internal/config"
+	"github.com/C-STYR/go-web1/internal/models"
+	"github.com/C-STYR/go-web1/internal/render"
 )
 
 type Repository struct {

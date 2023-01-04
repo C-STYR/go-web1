@@ -1,39 +1,35 @@
-{{template "base" .}}
-
-{{define "content"}}  
+{{template "base" .}} {{define "content"}}
 <div class="container">
-    <div class="row">
-      <div class="col">
-        <img
-          src="/static/images/majors-suite.png"
-          alt=""
-          class="image-fluid mt-5 d-block w-50 mx-auto"
-        />
-      </div>
+  <div class="row">
+    <div class="col">
+      <img
+        src="/static/images/majors-suite.png"
+        alt=""
+        class="image-fluid mt-5 d-block w-50 mx-auto"
+      />
     </div>
+  </div>
 
-    <div class="row">
-      <div class="col">
-        <h1 class="text-center mt-4">Major's Suite</h1>
-        <p class="text-center mt-2">Have a look at the lovely lakes</p>
-      </div>
+  <div class="row">
+    <div class="col">
+      <h1 class="text-center mt-4">Major's Suite</h1>
+      <p class="text-center mt-2">Have a look at the lovely lakes</p>
     </div>
-    <div class="row">
-      <div class="col text-center">
-        <a id="check-availability-button" href="#!" class="btn btn-success"
-          >Check Availability</a
-        >
-      </div>
+  </div>
+  <div class="row">
+    <div class="col text-center">
+      <a id="check-availability-button" href="#!" class="btn btn-success"
+        >Check Availability</a
+      >
     </div>
-  </div> 
-{{end}}
-
-{{define "js"}}
+  </div>
+</div>
+{{end}} {{define "js"}}
 <script>
   document
-        .getElementById("check-availability-button")
-        .addEventListener("click", function () {
-          const html = `
+    .getElementById("check-availability-button")
+    .addEventListener("click", function () {
+      const html = `
           <form
             id="check-availability-form"
             action=""
@@ -70,7 +66,7 @@
               </div>
             </div>
           `;
-          attention.custom({ title: "Choose your dates", msg: html });
-        });
+      attention.custom({ title: "Choose your dates", msg: html });
+    });
 </script>
 {{end}}

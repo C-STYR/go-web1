@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/C-STYR/go-web1/pkg/config"
-	"github.com/C-STYR/go-web1/pkg/handlers"
-	"github.com/C-STYR/go-web1/pkg/render"
+	"github.com/C-STYR/go-web1/internal/config"
+	"github.com/C-STYR/go-web1/internal/handlers"
+	"github.com/C-STYR/go-web1/internal/render"
 	"github.com/alexedwards/scs/v2"
 )
 

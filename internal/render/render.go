@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/C-STYR/go-web1/pkg/config"
-	"github.com/C-STYR/go-web1/pkg/models"
+	"github.com/C-STYR/go-web1/internal/config"
+	"github.com/C-STYR/go-web1/internal/models"
 	"github.com/justinas/nosurf"
 )
 
@@ -26,8 +26,6 @@ func NewTemplates(a *config.AppConfig) {
 
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	td.CSRFToken = nosurf.Token(r)
-	td.Flash = "flashy"
-	fmt.Println("td", td)
 	return td
 }
 

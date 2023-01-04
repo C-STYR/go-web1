@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/C-STYR/go-web1/pkg/config"
-	"github.com/C-STYR/go-web1/pkg/handlers"
+	"github.com/C-STYR/go-web1/internal/config"
+	"github.com/C-STYR/go-web1/internal/handlers"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -27,7 +27,7 @@ func routes(app *config.AppConfig) http.Handler {
 
 	mux.Get("/search-availability", handlers.Repo.Availability)
 	mux.Post("/search-availability", handlers.Repo.PostAvailability)
-	mux.Get("/search-availability-json", handlers.Repo.AvailabilityJSON)
+	mux.Post("/search-availability-json", handlers.Repo.AvailabilityJSON)
 
 	mux.Get("/generals-quarters", handlers.Repo.Generals)
 	mux.Get("/majors-suite", handlers.Repo.Majors)

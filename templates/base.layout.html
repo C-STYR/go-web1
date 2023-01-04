@@ -20,7 +20,7 @@
       type="text/css"
       href="https://unpkg.com/notie/dist/notie.min.css"
     />
-    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"/>  
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -40,9 +40,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/"
-                >Home</a
-              >
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/about">About</a>
@@ -64,7 +62,9 @@
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="/majors-suite">Major's Suite</a>
+                  <a class="dropdown-item" href="/majors-suite"
+                    >Major's Suite</a
+                  >
                 </li>
               </ul>
             </li>
@@ -78,12 +78,9 @@
         </div>
       </div>
     </nav>
-    {{block "content" .}} 
-    {{end}} 
+    {{block "content" .}} {{end}}
     <div class="my-footer text-center">
-      <div>
-        This is the footer
-      </div>
+      <div>This is the footer</div>
     </div>
 
     <!-- BOOTSTRAP -->
@@ -102,9 +99,7 @@
     <!-- SWEET ALERT -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{ block "js" .}} 
-    {{end}}
-
+    {{ block "js" .}} {{end}}
 
     <script>
       const Prompt = () => {
@@ -156,18 +151,15 @@
 
       async function custom(c) {
         const { msg = "", title = "" } = c;
-        const { value: formValues } = await Swal.fire({
+        const { value: result } = await Swal.fire({
           title: title,
           html: msg,
           focusConfirm: false,
           showCancelButton: true,
           willOpen: () => {
-            const elem = document.getElementById("reservation-dates-modal");
-            const rangepicker = new DateRangePicker(elem, {
-              format: "yyyy-mm-dd",
-              showOnFocus: true,
-              orientation: "top",
-            });
+            if (c.willOpen !== undefined) {
+              c.willOpen();
+            }
           },
           preConfirm: () => {
             return [
@@ -176,13 +168,24 @@
             ];
           },
           didOpen: () => {
-            document.getElementById("start").removeAttribute("disabled");
-            document.getElementById("end").removeAttribute("disabled");
+            if (c.didOpen !== undefined) {
+              c.didOpen();
+            }
           },
         });
 
-        if (formValues) {
-          Swal.fire(JSON.stringify(formValues));
+        if (result) {
+          if (result.dismiss !== Swal.DismissReason.cancel) {
+            if (result.value !== "") {
+              if (c.callback !== undefined) {
+                c.callback(result);
+              }
+            } else {
+              c.callback(false);
+            }
+          } else {
+            c.callback(false);
+          }
         }
       }
 
