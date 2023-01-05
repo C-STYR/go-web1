@@ -15,6 +15,7 @@ import (
 )
 
 const portNumber = ":8080"
+
 var app config.AppConfig
 
 var session = scs.New()
@@ -38,34 +39,33 @@ func main() {
 }
 
 func run() error {
-// to store non-primitives in the session
-gob.Register(models.Reservation{})
+	// to store non-primitives in the session
+	gob.Register(models.Reservation{})
 
-// change to true in production
-app.InProduction = false
+	// change to true in production
+	app.InProduction = false
 
+	// set session parameters
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = app.InProduction
 
-// set session parameters
-session.Lifetime = 24 * time.Hour
-session.Cookie.Persist = true
-session.Cookie.SameSite = http.SameSiteLaxMode
-session.Cookie.Secure = app.InProduction
+	// assign the session to this config to expose it to middleware
+	app.Session = session
 
-// assign the session to this config to expose it to middleware
-app.Session = session
+	tc, err := render.CreateTemplateCache()
+	if err != nil {
+		fmt.Println("MAIN cannot create template cache", err)
+		return err
+	}
 
-tc, err := render.CreateTemplateCache()
-if err != nil {
-	fmt.Println("MAIN cannot create template cache", err)
-	return err
-}
+	app.TemplateCache = tc
+	app.UseCache = false
 
-app.TemplateCache = tc
-app.UseCache = false
+	repo := handlers.NewRepo(&app)
+	handlers.NewHandlers(repo)
 
-repo := handlers.NewRepo(&app)
-handlers.NewHandlers(repo)
-
-render.NewTemplates(&app)
+	render.NewTemplates(&app)
 	return nil
 }
