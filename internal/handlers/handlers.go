@@ -158,6 +158,9 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// clear reservation from session once it has been saved as a local variable
+	m.App.Session.Remove(r.Context(), "reservation")
+
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
 
