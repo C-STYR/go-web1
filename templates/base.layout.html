@@ -102,6 +102,7 @@
     {{ block "js" .}} {{end}}
 
     <script>
+
       const Prompt = () => {
         let toast = (c) => {
           const { msg = "", icon = "success", position = "top-end" } = c;
@@ -220,6 +221,19 @@
           text: msg,
         });
       }
+
+      {{with .Error}}
+      notify("{{.}}", "error")
+      {{end}}
+
+      {{with .Flash}}
+      notify("{{.}}", "flash")
+      {{end}}
+
+      {{with .Warning}}
+      notify("{{.}}", "warning")
+      {{end}}
+      
     </script>
   </body>
 </html>

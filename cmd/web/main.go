@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/C-STYR/go-web1/internal/config"
 	"github.com/C-STYR/go-web1/internal/handlers"
+	"github.com/C-STYR/go-web1/internal/models"
 	"github.com/C-STYR/go-web1/internal/render"
 	"github.com/alexedwards/scs/v2"
 )
@@ -18,6 +20,9 @@ var app config.AppConfig
 var session = scs.New()
 
 func main() {
+
+	// to store non-primitives in the session
+	gob.Register(models.Reservation{})
 
 	// change to true in production
 	app.InProduction = false
