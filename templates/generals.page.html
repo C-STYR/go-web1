@@ -70,30 +70,30 @@
         title: "Choose your dates",
         msg: html,
         willOpen: () => {
-            const elem = document.getElementById("reservation-dates-modal");
-            const rangepicker = new DateRangePicker(elem, {
-              format: "yyyy-mm-dd",
-              showOnFocus: true,
-              orientation: "top",
-            });
-          },
-          didOpen: () => {
-            document.getElementById("start").removeAttribute("disabled");
-            document.getElementById("end").removeAttribute("disabled");
-          },
+          const elem = document.getElementById("reservation-dates-modal");
+          const rangepicker = new DateRangePicker(elem, {
+            format: "yyyy-mm-dd",
+            showOnFocus: true,
+            orientation: "top",
+          });
+        },
+        didOpen: () => {
+          document.getElementById("start").removeAttribute("disabled");
+          document.getElementById("end").removeAttribute("disabled");
+        },
         callback: (result) => {
-          console.log("called")
+          console.log("called");
 
-          const form = document.getElementById("check-availability-form")
-          const formData = new FormData(form)
-          formData.append("csrf_token", "{{.CSRFToken}}")
+          const form = document.getElementById("check-availability-form");
+          const formData = new FormData(form);
+          formData.append("csrf_token", "{{.CSRFToken}}");
 
           fetch("/search-availability-json", {
             method: "post",
             body: formData,
           })
-          .then(res => res.json())
-          .then(data => console.log("data:", data))
+            .then((res) => res.json())
+            .then((data) => console.log("data:", data));
         },
       });
     });

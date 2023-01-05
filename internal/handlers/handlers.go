@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/C-STYR/go-web1/internal/config"
+	"github.com/C-STYR/go-web1/internal/forms"
 	"github.com/C-STYR/go-web1/internal/models"
 	"github.com/C-STYR/go-web1/internal/render"
 )
@@ -51,7 +52,49 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 }
 
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "reservation.page.html", &models.TemplateData{})
+
+	var emptyReservation models.Reservation
+	data := make(map[string]interface{})
+	data["reservation"] = emptyReservation
+
+	render.RenderTemplate(w, r, "make-reservation.page.html", &models.TemplateData{
+		Form: forms.New(nil),
+		Data: data,
+	})
+}
+
+// PostReservation handles the posting of a reservation form
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	// make certain form data is parseable before any other action
+	if err := r.ParseForm(); err != nil {
+		log.Println(err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("first_name"),
+		LastName: r.Form.Get("last_name"),
+		Email: r.Form.Get("email"),
+		Phone: r.Form.Get("phone"),
+	}
+	// PostForm is only available after ParseForm has been called
+	form := forms.New(r.PostForm)
+
+	// Validators
+	form.Required("first_name", "last_name", "email")
+	form.MinLength("first_name", 3, r)
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+
+		// render the form
+		render.RenderTemplate(w, r, "make-reservation.page.html", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})	
+		return
+	}
 }
 
 func (m *Repository) Availability(w http.ResponseWriter, r *http.Request) {
