@@ -20,8 +20,9 @@ If some data is invalid, the data and the form are passed to the renderer and di
           <label for="first_name">First name:</label>
           {{with .Form.Errors.Get "first_name"}}
           <label class="text-danger">{{.}}</label>
-          {{end}} <input class="form-control {{with .Form.Errors.Get
-          "first_name"}} is-invalid {{end}}" type="text" name="first_name"
+          {{end}} 
+          <input class="form-control {{with .Form.Errors.Get "first_name"}} is-invalid {{end}}" 
+          type="text" name="first_name"
           id="first_name" required autocomplete="off"
           value="{{$res.FirstName}}"/>
         </div>
@@ -29,8 +30,9 @@ If some data is invalid, the data and the form are passed to the renderer and di
           <label for="last_name">Last name:</label>
           {{with .Form.Errors.Get "last_name"}}
           <label class="text-danger">{{.}}</label>
-          {{end}} <input class="form-control {{with .Form.Errors.Get
-          "last_name"}} is-invalid {{end}}" type="text" name="last_name"
+          {{end}} 
+          <input class="form-control {{with .Form.Errors.Get "last_name"}} is-invalid {{end}}" 
+          type="text" name="last_name"
           id="last_name" required autocomplete="off" value="{{$res.LastName}}"
           />
         </div>
@@ -38,16 +40,18 @@ If some data is invalid, the data and the form are passed to the renderer and di
           <label for="email">Email:</label>
           {{with .Form.Errors.Get "email"}}
           <label class="text-danger">{{.}}</label>
-          {{end}} <input class="form-control {{with .Form.Errors.Get "email"}}
-          is-invalid {{end}}" type="email" name="email" id="email" required
+          {{end}} 
+          <input class="form-control {{with .Form.Errors.Get "email"}} is-invalid {{end}}" 
+          type="email" name="email" id="email" required
           autocomplete="off" value="{{$res.Email}}" />
         </div>
         <div class="form-group">
           <label for="phone">Phone:</label>
           {{with .Form.Errors.Get "phone"}}
           <label class="text-danger">{{.}}</label>
-          {{end}} <input class="form-control {{with .Form.Errors.Get "phone"}}
-          is-invalid {{end}}" type="text" name="phone" id="phone"
+          {{end}} 
+          <input class="form-control {{with .Form.Errors.Get "phone"}} is-invalid {{end}}" 
+          type="text" name="phone" id="phone"
           autocomplete="off" value="{{$res.Phone}}" />
         </div>
         <hr />
