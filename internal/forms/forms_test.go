@@ -45,46 +45,49 @@ func TestForm_Required(t *testing.T) {
 }
 
 func TestForm_Has(t *testing.T) {
-	r := httptest.NewRequest("POST", "/whatever", nil)
-	form := New(r.PostForm)
-
-	if form.Has("a", r) {
-		t.Error("shows valid when invalid")
-	}
 
 	postedData := url.Values{}
+	form := New(postedData)
+
+	if form.Has("a") {
+		t.Error("shows valid when invalid")
+	}
 
 	postedData.Add("a", "b")
 
 	form = New(postedData)
 
-	if !form.Has("a", r) {
+	isError := form.Errors.Get("a")
+	if isError != "" {
+		t.Error("returns error when no error present")
+	}
+
+	if !form.Has("a") {
 		t.Error("shows invalid when valid")
 	}
 }
 
 func Test_MinLength(t *testing.T) {
-	r := httptest.NewRequest("POST", "/whatever", nil)
-	form := New(r.PostForm)
 
-	form.MinLength("a", 2, r)
+	postedData := url.Values{}
+	form := New(postedData)
+
+	form.MinLength("a", 2)
 	if form.Valid() {
 		t.Error("shows valid when field is non-existent")
 	}
 
-	postedData := url.Values{}
-
 	postedData.Add("a", "bc")
-	
+
 	form = New(postedData)
 
-	form.MinLength("a", 2, r) 
-	if !form.Valid(){
+	form.MinLength("a", 2)
+	if !form.Valid() {
 		t.Error("shows invalid when valid")
 	}
 
-	form.MinLength("a", 3, r) 
-	if form.Valid(){
+	form.MinLength("a", 3)
+	if form.Valid() {
 		t.Error("shows valid when invalid")
 	}
 }
@@ -97,6 +100,11 @@ func Test_IsEmail(t *testing.T) {
 	form.IsEmail("x")
 	if form.Valid() {
 		t.Error("validator shows valid email for non-existent field")
+	}
+
+	isError := form.Errors.Get(("x")) 
+	if isError == "" {
+		t.Error("get method should return an error when it does not")
 	}
 
 	postedData.Add("good email", "test@example.com")
