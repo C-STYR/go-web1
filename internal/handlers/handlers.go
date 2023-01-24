@@ -8,6 +8,7 @@ import (
 
 	"github.com/C-STYR/go-web1/internal/config"
 	"github.com/C-STYR/go-web1/internal/forms"
+	"github.com/C-STYR/go-web1/internal/helpers"
 	"github.com/C-STYR/go-web1/internal/models"
 	"github.com/C-STYR/go-web1/internal/render"
 )
@@ -31,24 +32,13 @@ func NewHandlers(r *Repository) {
 }
 
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	remoteIP := r.RemoteAddr
-
-	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
 
 	render.RenderTemplate(w, r, "home.page.html", &models.TemplateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 
-	stringMap := make(map[string]string)
-	stringMap["test"] = "Hello, again."
-
-	remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
-	stringMap["remote_ip"] = remoteIP
-
-	render.RenderTemplate(w, r, "about.page.html", &models.TemplateData{
-		StringMap: stringMap,
-	})
+	render.RenderTemplate(w, r, "about.page.html", &models.TemplateData{})
 }
 
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
@@ -66,8 +56,10 @@ func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
 // PostReservation handles the posting of a reservation form
 func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	// make certain form data is parseable before any other action
-	if err := r.ParseForm(); err != nil {
-		log.Println(err)
+	err := r.ParseForm()
+	// err = errors.New("this is an error message")
+	if err != nil {
+		helpers.ServerError(w, err)
 		return
 	}
 
@@ -126,7 +118,8 @@ func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
 	out, err := json.MarshalIndent(resp, "", "     ")
 	if err != nil {
-		fmt.Println(err)
+		helpers.ServerError(w, err)
+		return
 	}
 
 	log.Println(string(out))
@@ -151,7 +144,10 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	// type assertion: cast the session var as models.Reservation
 	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 	if !ok {
-		log.Println("cannot get item from session")
+
+		// logs error
+		m.App.ErrorLog.Println("cannot get item from session")
+
 		// add error to session if no reservation data found
 		m.App.Session.Put(r.Context(), "error", "Can't get reservation from session.")
 		http.Redirect(w, r, "/", http.StatusSeeOther)

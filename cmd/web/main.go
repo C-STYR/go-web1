@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/C-STYR/go-web1/internal/config"
@@ -19,6 +20,8 @@ const portNumber = ":8080"
 var app config.AppConfig
 
 var session = scs.New()
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 func main() {
 
@@ -50,6 +53,12 @@ func run() error {
 	session.Cookie.Persist = true
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = app.InProduction
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	// assign the session to this config to expose it to middleware
 	app.Session = session

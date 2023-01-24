@@ -4,7 +4,9 @@ import (
 	"encoding/gob"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -30,6 +32,12 @@ func getRoutes() http.Handler {
 
 	// change to true in production
 	app.InProduction = false
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	// set session parameters
 	session.Lifetime = 24 * time.Hour
