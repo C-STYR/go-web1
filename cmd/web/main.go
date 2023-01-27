@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/C-STYR/go-web1/internal/config"
+	"github.com/C-STYR/go-web1/internal/driver"
 	"github.com/C-STYR/go-web1/internal/handlers"
 	"github.com/C-STYR/go-web1/internal/models"
 	"github.com/C-STYR/go-web1/internal/render"
@@ -25,10 +26,13 @@ var errorLog *log.Logger
 
 func main() {
 
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// this must be done in main() rather than run() or else db will close immediately
+	defer db.SQL.Close()
 
 	fmt.Printf("starting1 application on port %s", portNumber)
 
@@ -41,7 +45,7 @@ func main() {
 	log.Fatal(err)
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	// to store non-primitives in the session
 	gob.Register(models.Reservation{})
 
@@ -63,18 +67,26 @@ func run() error {
 	// assign the session to this config to expose it to middleware
 	app.Session = session
 
+	// connect to database
+	log.Println("Connecting to database...")
+	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=colestyron password=")
+	if err != nil {
+		log.Fatal("Cannot connect to database...dead.")
+	}
+	log.Println("Database connected.")
+
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		fmt.Println("MAIN cannot create template cache", err)
-		return err
+		return nil, err
 	}
 
 	app.TemplateCache = tc
 	app.UseCache = false
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
-	return nil
+	return db, nil
 }

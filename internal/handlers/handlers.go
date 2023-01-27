@@ -7,22 +7,27 @@ import (
 	"net/http"
 
 	"github.com/C-STYR/go-web1/internal/config"
+	"github.com/C-STYR/go-web1/internal/driver"
 	"github.com/C-STYR/go-web1/internal/forms"
 	"github.com/C-STYR/go-web1/internal/helpers"
 	"github.com/C-STYR/go-web1/internal/models"
 	"github.com/C-STYR/go-web1/internal/render"
+	"github.com/C-STYR/go-web1/internal/repository"
+	"github.com/C-STYR/go-web1/internal/repository/dbrepo"
 )
 
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 var Repo *Repository
 
 // NewRepo creates a new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
