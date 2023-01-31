@@ -16,6 +16,7 @@ If some data is invalid, the data and the form are passed to the renderer and di
       {{$res := index .Data "reservation"}}
       <form method="post" action="" class="" novalidate>
         <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+        
         <div class="form-group">
           <label for="first_name">First name:</label>
           {{with .Form.Errors.Get "first_name"}}
@@ -36,6 +37,18 @@ If some data is invalid, the data and the form are passed to the renderer and di
           id="last_name" required autocomplete="off" value="{{$res.LastName}}"
           />
         </div>
+        <div class="form-group">
+          <label for="start_date">Start Date:</label>
+          <input type="text" name="start_date" id="start_date" class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label for="end_date">End Date:</label>
+          <input type="text" name="end_date" id="end_date" class="form-control">
+        </div>
+
+        <input type="hidden" name="room_id" value="1">
+
         <div class="form-group">
           <label for="email">Email:</label>
           {{with .Form.Errors.Get "email"}}
