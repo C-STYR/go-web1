@@ -12,10 +12,23 @@ If some data is invalid, the data and the form are passed to the renderer and di
   <div class="row">
     <div class="col">
       <h1 class="text-center mt-4">Make Reservation</h1>
-      <!-- Declare variable $res passing in emptyRes -->
+
+      <p><strong>Reservation Details</strong></p>
+
       {{$res := index .Data "reservation"}}
-      <form method="post" action="" class="" novalidate>
+
+      Room Name: {{$res.Room.RoomName}}<br>
+      Arrival: {{index .StringMap "start_date"}}<br>
+      Departure: {{index .StringMap "end_date"}}<br>
+      <br>
+      <!-- Declare variable $res passing in emptyRes -->
+      
+      <form method="post" action="/make-reservation" class="" novalidate>
         <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+        <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}" />
+        <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}" />
+        
+        <input type="hidden" name="room_id" value="{{$res.RoomID}}">
         
         <div class="form-group">
           <label for="first_name">First name:</label>
@@ -37,17 +50,7 @@ If some data is invalid, the data and the form are passed to the renderer and di
           id="last_name" required autocomplete="off" value="{{$res.LastName}}"
           />
         </div>
-        <div class="form-group">
-          <label for="start_date">Start Date:</label>
-          <input type="text" name="start_date" id="start_date" class="form-control">
-        </div>
         
-        <div class="form-group">
-          <label for="end_date">End Date:</label>
-          <input type="text" name="end_date" id="end_date" class="form-control">
-        </div>
-
-        <input type="hidden" name="room_id" value="1">
 
         <div class="form-group">
           <label for="email">Email:</label>
