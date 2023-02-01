@@ -1,7 +1,5 @@
 {
-  "devDependencies": {
-    "prettier": "2.8.3"
-  },
+  "devDependencies": {},
   "scripts": {
     "pr": "prettier --write .",
     "yep": "go run cmd/web/main.go cmd/web/middleware.go cmd/web/routes.go"

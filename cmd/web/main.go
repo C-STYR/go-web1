@@ -34,7 +34,7 @@ func main() {
 	// this must be done in main() rather than run() or else db will close immediately
 	defer db.SQL.Close()
 
-	fmt.Printf("starting1 application on port %s", portNumber)
+	fmt.Printf("starting1 application on port %s\n", portNumber)
 
 	srv := &http.Server{
 		Addr:    portNumber,
