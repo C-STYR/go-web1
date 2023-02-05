@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -153,6 +154,36 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	m.App.Session.Put(r.Context(), "reservation", reservation)
+
+	// send notifications - first to guest
+
+	htmlMessageToGuest := fmt.Sprintf(`
+		<strong>Reservation Confirmation</strong><br>
+		Dear %s,<br>
+		This is to confirm your reservation from %s to %s.
+	`, reservation.FirstName, reservation.StartDate.Format("2006-01-02"), reservation.EndDate.Format("2006-1-02"))
+
+	htmlMessageToOwner := fmt.Sprintf(`
+		<strong>Reservation Confirmation</strong><br>
+		Dear %s,<br>
+		The %s room has been booked from %s to %s
+	`, "Mr. Owner", reservation.Room.RoomName, reservation.StartDate.Format("2006-01-02"), reservation.EndDate.Format("2006-1-02"))
+
+	msgToGuest := models.MailData{
+		To:      reservation.Email,
+		From:    "me@here.com",
+		Subject: "Reservation Confirmation",
+		Content: htmlMessageToGuest,
+	}
+
+	msgToOwner := models.MailData{
+		To:      "owner@here.com",
+		From:    "me@here.com",
+		Subject: "Reservation Confirmation",
+		Content: htmlMessageToOwner,
+	}
+	m.App.MailChan <- msgToGuest
+	m.App.MailChan <- msgToOwner
 
 	// redirect with 303 code
 	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
