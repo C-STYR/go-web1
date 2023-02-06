@@ -174,6 +174,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		From:    "me@here.com",
 		Subject: "Reservation Confirmation",
 		Content: htmlMessageToGuest,
+		Template: "basic.html",
 	}
 
 	msgToOwner := models.MailData{
