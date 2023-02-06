@@ -74,7 +74,11 @@
             </li>
             <li class="nav-item">
             <li class="nav-item">
+              {{if eq .IsAuthenticated 1}}
+              <a class="nav-link" href="/user/logout">Logout</a>
+              {{else}}
               <a class="nav-link" href="/user/login">Login</a>
+              {{end}}
             </li>
               <a class="nav-link" href="/contact">Contact</a>
             </li>
