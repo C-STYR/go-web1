@@ -216,7 +216,6 @@ func (m *postgresDBRepo) UpdateUser(u models.User) error {
 
 // Authenticate authenticates a users	
 func (m *postgresDBRepo) Authenticate(email, testPassword string) (int, string, error) {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -224,7 +223,6 @@ func (m *postgresDBRepo) Authenticate(email, testPassword string) (int, string, 
 	var hashedPassword string
 
 	row := m.DB.QueryRowContext(ctx, "select id, password from users where email = $1", email)
-
 	err := row.Scan(&id, &hashedPassword)
 	if err != nil {
 		return id, "", err
@@ -236,5 +234,6 @@ func (m *postgresDBRepo) Authenticate(email, testPassword string) (int, string, 
 	} else if err != nil {
 		return 0, "", err
 	}
+
 	return id, hashedPassword, nil
 }

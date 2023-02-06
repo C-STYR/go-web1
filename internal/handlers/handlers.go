@@ -379,7 +379,7 @@ func (m *Repository) ShowLogin(w http.ResponseWriter, r *http.Request) {
 // PostShowLogin handles logging the user in
 func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
 	// prevents session fixation attack
-	m.App.Session.RenewToken(r.Context())
+	_ = m.App.Session.RenewToken(r.Context())
 
 	err := r.ParseForm()
 	if err != nil {
@@ -387,13 +387,17 @@ func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	email := r.Form.Get("email")
-	password := r.Form.Get("email")
+	password := r.Form.Get("password")
 	form := forms.New(r.PostForm)
 
 	form.Required("email", "password")
+	form.IsEmail("email")
 
 	if !form.Valid() {
-		//TODO take user back to page
+		render.Template(w, r, "login.page.html", &models.TemplateData{
+			Form: form,
+		})
+		return
 	}
 
 	// attempt to authenticate the user at login
@@ -404,7 +408,6 @@ func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/user/login", http.StatusSeeOther)
 		return
 	}
-
 
 	m.App.Session.Put(r.Context(), "user_id", id)
 	m.App.Session.Put(r.Context(), "flash", "Successfully logged in")
